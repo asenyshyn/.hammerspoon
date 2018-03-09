@@ -2,30 +2,24 @@
 hyperKey = hs.hotkey.modal.new({}, 'F17')
 
 -- alert to show (if any) on hyper key press
-alert = nil
 reload = false
 screen = hs.screen.primaryScreen()
-style = {textSize = 14, radius = 14}
+style = {textSize = 14, radius = 14, atScreenEdge = 2}
 
 log = hs.logger.new('hyperkey')
 
 -- Enter Hyper Mode when F18 (Hyper/Capslock) is pressed
 function enterHyperMode()
   hyperKey.triggered = false
-  if alert then
-    hs.alert.closeSpecific(alert, 0)
-  end
-  alert = hs.alert.show(bindings, style, screen, 2)
+  hs.alert.closeAll()
+  hs.alert.show(bindings, style, screen, 10)
   hyperKey:enter()
 end
 
 -- Leave Hyper Mode when F18 (Hyper/Capslock) is pressed,
 -- send ESCAPE if no other keys are pressed.
 function exitHyperMode()
-  if alert then
-    hs.alert.closeSpecific(alert, 0)
-    alert = nil
-  end
+  hs.alert.closeAll()
   -- clear dirty hack. watch HS change log
   collectgarbage()
   hyperKey:exit()
@@ -43,12 +37,14 @@ singleKeyApps = {
   {'K', 'Skype'},
   {'S', 'Slack'},
   {'M', 'Mail'},
+  {'N', 'Notes'},
   {'P', 'Google Play Music Desktop Player'},
   {'T', 'iTerm'},
   {'V', 'VirtualBox'},
   {'W', 'Safari'},
   {'.', 'Dash'},
-  {',', 'System Preferences'}
+  {',', 'System Preferences'},
+  {'\\', 'Amphetamine'}
 }
 
 -- launch apps

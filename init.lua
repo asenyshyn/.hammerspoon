@@ -1,16 +1,16 @@
 require "hyper"
 require "actions"
 
+require "display"
+
 -- Spoons
 mousecircle = hs.loadSpoon('MouseCircle', false)
-caffeine = hs.loadSpoon('Caffeine', false)
 
 -- Reload config spoon
 hs.loadSpoon("ReloadConfiguration")
 spoon.ReloadConfiguration:start()
 
-
-local usbWatcher = nil
+usbWatcher = nil
 
 -- This is our usbWatcher function
 -- lock when yubikey is removed
@@ -26,7 +26,6 @@ function usbDeviceCallback(data)
     hs.notify.show("USB", "You just removed", data["productName"])
 
     if string.match(data["productName"], "Yubikey") then
-      -- hs.messages.iMessage("+000000000000", "Your Yubikey was just removed from your Work iMac.")
       os.execute("pmset displaysleepnow")
     end
   end

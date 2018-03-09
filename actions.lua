@@ -1,3 +1,5 @@
+log = hs.logger.new('actions')
+
 bindings = bindings .. "\nPress key to do action:\n-------------------------------------------------\n"
 guide('Y', nil, "Yubikey")
 hyperKey:bind({}, "Y", function()
