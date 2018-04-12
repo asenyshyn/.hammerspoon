@@ -38,5 +38,4 @@ function focusScreen(screen)
   local pt = geometry.rectMidPoint(screen:fullFrame())
   mouse.setAbsolutePosition(pt)
 end
-
 -- END DISPLAY FOCUS SWITCHING --

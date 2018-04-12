@@ -1,10 +1,10 @@
 require "hyper"
 require "actions"
-
 require "display"
 
 -- Spoons
 mousecircle = hs.loadSpoon('MouseCircle', false)
+wm = hs.loadSpoon("MiroWindowsManager")
 
 -- Reload config spoon
 hs.loadSpoon("ReloadConfiguration")
@@ -34,3 +34,13 @@ end
 -- Start the usb watcher
 usbWatcher = hs.usb.watcher.new(usbDeviceCallback)
 usbWatcher:start()
+
+local wmKey = {"cmd", "alt"}
+hs.window.animationDuration = 0
+wm:bindHotkeys({
+    up         = {wmKey, "up"},
+    right      = {wmKey, "right"},
+    down       = {wmKey, "down"},
+    left       = {wmKey, "left"},
+    fullscreen = {wmKey, "f"}
+})
