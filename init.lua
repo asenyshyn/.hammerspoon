@@ -1,46 +1,106 @@
-require "hyper"
-require "actions"
-require "display"
+---
+--- settings
+---
+hs.logger.setGlobalLogLevel("info")
 
--- Spoons
-mousecircle = hs.loadSpoon('MouseCircle', false)
-wm = hs.loadSpoon("MiroWindowsManager")
-
--- Reload config spoon
-hs.loadSpoon("ReloadConfiguration")
-spoon.ReloadConfiguration:start()
-
-usbWatcher = nil
-
--- This is our usbWatcher function
--- lock when yubikey is removed
-function usbDeviceCallback(data)
-  -- this line will let you know the name of each usb device you connect, useful for the string match below
-  if (data["eventType"] == "added") then
-    hs.notify.show("USB", "You just connected", data["productName"])
-
-    if string.match(data["productName"], "Yubikey") then
-      os.execute("caffeinate -u -t 5")
-    end
-  elseif data["eventType"] == "removed" then
-    hs.notify.show("USB", "You just removed", data["productName"])
-
-    if string.match(data["productName"], "Yubikey") then
-      os.execute("pmset displaysleepnow")
-    end
-  end
+---
+--- local functions
+---
+local function activateYubikey()
+  hs.eventtap.keyStrokes(hs.execute('PATH=$HOME/bin:/usr/local/bin:$PATH /Users/sam/bin/yubi/yubi_goog.py --yubi', false))
 end
 
--- Start the usb watcher
-usbWatcher = hs.usb.watcher.new(usbDeviceCallback)
-usbWatcher:start()
+local function toggleFullscreen()
+  local win = hs.window.frontmostWindow()
+  win:setFullscreen(not win:isFullscreen())
+end
 
-local wmKey = {"cmd", "alt"}
+local function lockScreen()
+  os.execute("pmset displaysleepnow")
+end
+
+-- Spoons
+hs.loadSpoon("SpoonInstall")
+
+-- spoon.SpoonInstall.use_syncinstall = true
+local Install=spoon.SpoonInstall
+
+local wmKey      = {"cmd", "alt"}
+local wmKeyShift = {"cmd", "alt", "shift"}
+
 hs.window.animationDuration = 0
-wm:bindHotkeys({
-    up         = {wmKey, "up"},
-    right      = {wmKey, "right"},
-    down       = {wmKey, "down"},
-    left       = {wmKey, "left"},
-    fullscreen = {wmKey, "f"}
+Install:andUse("MiroWindowsManager",
+                {
+                  hotkeys = {
+                      up         = {wmKey, "up"},
+                      right      = {wmKey, "right"},
+                      down       = {wmKey, "down"},
+                      left       = {wmKey, "left"},
+                      fullscreen = {wmKey, "f"}
+                  }
+                }
+)
+
+Install:andUse("ReloadConfiguration",
+               {
+                 start = true
+               }
+)
+
+Install:andUse("TimeMachineProgress",
+               {
+                 disable = true,
+                 start = true
+               }
+)
+
+Install:andUse("WindowScreenLeftAndRight",
+               {
+                 hotkeys = {
+                   screen_left  = { wmKeyShift, "Left" },
+                   screen_right = { wmKeyShift, "Right" },
+                 }
+               }
+)
+
+hs.loadSpoon("DisplayTab")
+spoon.DisplayTab:bindHotkeys(spoon.DisplayTab.defaultHotkeys)
+
+hs.loadSpoon("UsbYubiWatcher")
+spoon.UsbYubiWatcher.deviceActions = {
+  Yubikey = {
+    connect    = function() os.execute("caffeinate -u -t 10") end,
+    disconnect = lockScreen
+  }
+}
+spoon.UsbYubiWatcher:start()
+
+hs.loadSpoon("KeyCommander")
+spoon.KeyCommander:bindHotkeys({
+    hotkey = spoon.KeyCommander.defaultHotkey,
+    appKeys = {
+      {{}, 'B', 'Calibre'},
+      {{}, 'C', 'Calendar'},
+      {{"shift"}, 'C', 'Calculator'},
+      {{}, 'E', 'Emacs'},
+      {{}, 'F', 'Finder'},
+      {{}, 'G', 'Telegram'},
+      {{}, 'K', 'Skype'},
+      {{}, 'S', 'Slack'},
+      {{}, 'M', 'Mail'},
+      {{}, 'N', 'Notes'},
+      {{}, 'P', 'MacPass'},
+      {{}, 'T', 'iTerm'},
+      {{}, 'V', 'VirtualBox'},
+      {{}, 'W', 'Safari'},
+      {{}, '.', 'Dash'},
+      {{}, ',', 'System Preferences'},
+      {{}, '\\', 'Amphetamine'}
+    },
+    actionKeys = {
+      {{}, "Y", activateYubikey},
+      {{}, "L", lockScreen},
+      {{}, "return", toggleFullscreen},
+      {{"shift"}, "0", hs.openConsole}
+    }
 })

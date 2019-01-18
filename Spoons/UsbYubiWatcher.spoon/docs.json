@@ -1,0 +1,41 @@
+[
+  {
+    "Constant" : [
+
+    ],
+    "submodules" : [
+
+    ],
+    "Function" : [
+
+    ],
+    "Variable" : [
+
+    ],
+    "stripped_doc" : [
+
+    ],
+    "desc" : "Notify about connected\/disconnected USB devices. Wake\/Lock mac on Yubikey plug\/unplug",
+    "Deprecated" : [
+
+    ],
+    "type" : "Module",
+    "Constructor" : [
+
+    ],
+    "doc" : "Notify about connected\/disconnected USB devices. Wake\/Lock mac on Yubikey plug\/unplug\n\nDownload: [https:\/\/github.com](https:\/\/github.com)",
+    "Method" : [
+
+    ],
+    "Command" : [
+
+    ],
+    "Field" : [
+
+    ],
+    "items" : [
+
+    ],
+    "name" : "UsbYubiWatcher"
+  }
+]

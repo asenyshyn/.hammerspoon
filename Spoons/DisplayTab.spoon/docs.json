@@ -1,0 +1,83 @@
+[
+  {
+    "Constant" : [
+
+    ],
+    "submodules" : [
+
+    ],
+    "Function" : [
+
+    ],
+    "Variable" : [
+
+    ],
+    "stripped_doc" : [
+
+    ],
+    "desc" : "Switch between applications on different displays",
+    "Deprecated" : [
+
+    ],
+    "type" : "Module",
+    "Constructor" : [
+
+    ],
+    "doc" : "Switch between applications on different displays\n\nDownload: [https:\/\/github.com](https:\/\/github.com)",
+    "Method" : [
+      {
+        "doc" : "Binds hotkeys for DisplayTab\n\nParameters:\n * mapping - A table containing hotkey objifier\/key details for the following items:\n  * focus_next, focus_previous - move the focus to the next\/previous display (if you have more than one monitor connected, does nothing otherwise)",
+        "parameters" : [
+          " * mapping - A table containing hotkey objifier\/key details for the following items:",
+          "  * focus_next, focus_previous - move the focus to the next\/previous display (if you have more than one monitor connected, does nothing otherwise)"
+        ],
+        "stripped_doc" : [
+          "Binds hotkeys for DisplayTab",
+          ""
+        ],
+        "name" : "bindHotkeys",
+        "notes" : [
+
+        ],
+        "signature" : "DisplayTab:bindHotkeys(mapping)",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "def" : "DisplayTab:bindHotkeys(mapping)",
+        "desc" : "Binds hotkeys for DisplayTab"
+      }
+    ],
+    "Command" : [
+
+    ],
+    "Field" : [
+
+    ],
+    "items" : [
+      {
+        "doc" : "Binds hotkeys for DisplayTab\n\nParameters:\n * mapping - A table containing hotkey objifier\/key details for the following items:\n  * focus_next, focus_previous - move the focus to the next\/previous display (if you have more than one monitor connected, does nothing otherwise)",
+        "parameters" : [
+          " * mapping - A table containing hotkey objifier\/key details for the following items:",
+          "  * focus_next, focus_previous - move the focus to the next\/previous display (if you have more than one monitor connected, does nothing otherwise)"
+        ],
+        "stripped_doc" : [
+          "Binds hotkeys for DisplayTab",
+          ""
+        ],
+        "name" : "bindHotkeys",
+        "notes" : [
+
+        ],
+        "signature" : "DisplayTab:bindHotkeys(mapping)",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "def" : "DisplayTab:bindHotkeys(mapping)",
+        "desc" : "Binds hotkeys for DisplayTab"
+      }
+    ],
+    "name" : "DisplayTab"
+  }
+]
