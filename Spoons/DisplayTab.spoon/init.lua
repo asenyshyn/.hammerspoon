@@ -42,18 +42,18 @@ function obj.focusScreen(screen)
 
   -- Move mouse to center of screen
   local pt = hs.geometry.rectMidPoint(screen:fullFrame())
-  hs.mouse.setAbsolutePosition(pt)
+  hs.mouse.absolutePosition(pt)
 end
 
 function obj.focusBetweenDisplays(where)
   local s = hs.window.focusedWindow():screen()
   if s == nil then
-    obj.logger.d("screen not found")
+    obj.logger:d("screen not found")
     return
   end
 
   if #(hs.screen.allScreens()) <= 1 then
-    obj.logger.d(s:name().." is the only screen")
+    obj.logger:d(s:name().." is the only screen")
     return
   end
 

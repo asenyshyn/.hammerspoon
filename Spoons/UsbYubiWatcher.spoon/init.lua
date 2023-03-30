@@ -55,6 +55,14 @@ function obj:usbDeviceCallback(data)
   end
 end
 
+-- Starts the usb watcher
+--
+--- UsbYubiWatcher:start()
+--- Method
+--- Start UsbYubiWatcher
+---
+--- Parameters:
+---  * None
 function obj:start()
   self:stop()
   self.watcher = hs.usb.watcher.new(function(data) self:usbDeviceCallback(data) end)
@@ -62,6 +70,12 @@ function obj:start()
   return self
 end
 
+--- UsbYubiWatcher:stop()
+--- Method
+--- Stop UsbYubiWatcher
+---
+--- Parameters:
+---  * None
 function obj:stop()
   if self.watcher then
     self.watcher:stop()

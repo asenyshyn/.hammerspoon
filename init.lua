@@ -12,11 +12,20 @@ end
 
 local function toggleFullscreen()
   local win = hs.window.frontmostWindow()
-  win:setFullscreen(not win:isFullscreen())
+  win:setFullScreen(not win:isFullScreen())
 end
 
 local function lockScreen()
   os.execute("pmset displaysleepnow")
+end
+
+local function undock()
+  for path, volume in pairs(hs.fs.volume.allVolumes()) do
+    if not volume.NSURLVolumeIsInternalKey then
+      hs.fs.volume.eject(path)
+      hs.notify.show("Disk ejected", "Save to disconnect", "Disk: "..volume.NSURLVolumeNameKey.." path "..path)
+    end
+  end
 end
 
 -- Spoons
@@ -24,6 +33,7 @@ hs.loadSpoon("SpoonInstall")
 
 -- spoon.SpoonInstall.use_syncinstall = true
 local Install=spoon.SpoonInstall
+
 
 local wmKey      = {"cmd", "alt"}
 local wmKeyShift = {"cmd", "alt", "shift"}
@@ -120,12 +130,6 @@ hs.hotkey.bind(wmKey, ']', function()
 	win:setFrame(x)
 end)
 
-Install:andUse("ReloadConfiguration",
-               {
-                 start = true
-               }
-)
-
 Install:andUse("WindowScreenLeftAndRight",
                {
                  hotkeys = {
@@ -161,7 +165,8 @@ spoon.KeyCommander:bindHotkeys({
       {{}, 'S', 'Slack'},
       {{}, 'M', 'Mail'},
       {{}, 'N', 'Notes'},
-      {{}, 'P', 'MacPass'},
+      {{}, 'P', 'KeePassXC'},
+      {{}, 'O', 'Spotify'},
       {{}, 'T', 'iTerm'},
       {{}, 'V', 'Viber'},
       {{}, 'Z', 'Zoom.us.app'},
@@ -175,14 +180,15 @@ spoon.KeyCommander:bindHotkeys({
       {{}, "Y", activateYubikey},
       {{}, "L", lockScreen},
       {{}, "return", toggleFullscreen},
-      {{"shift"}, "0", hs.openConsole}
+      {{"shift"}, "0", hs.openConsole},
+      {{"shift"}, "U", undock}
     }
 })
 
 local lastPsuSerial = "unknown"
 
 local function batteryChangedCallback()
-  psuSerial = hs.battery.psuSerialString()
+  local psuSerial = hs.battery.psuSerialString()
   if hs.battery.powerSource() == "AC Power"  then
     if psuSerial ~= "C4H701102AMGN8RA4"
       and psuSerial ~=""
@@ -196,3 +202,12 @@ end
 
 local batteryWatcher = hs.battery.watcher.new(batteryChangedCallback)
 batteryWatcher:start()
+
+hs.timer.doEvery(30, collectgarbage)
+
+Install:andUse("EmmyLua")
+Install:andUse("ReloadConfiguration",
+  {
+    start = true
+  }
+)
