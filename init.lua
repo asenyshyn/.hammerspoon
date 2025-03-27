@@ -2,7 +2,7 @@
 --- local functions
 ---
 local function activateYubikey()
-  local output, status, exit_type, code = hs.execute('PATH=$HOME/bin:/usr/local/bin:$PATH /Users/sam/bin/yubi/yubi_goog.py --yubi', false)
+  local output, status, exit_type, code = hs.execute('PATH=$HOME/bin:/opt/homebrew/bin:$PATH /Users/sam/bin/yubi/yubi_goog.py --yubi', false)
   if status then
     hs.eventtap.keyStrokes(output)
   else
@@ -145,37 +145,41 @@ spoon.DisplayTab:bindHotkeys(spoon.DisplayTab.defaultHotkeys)
 hs.loadSpoon("UsbYubiWatcher")
 spoon.UsbYubiWatcher.deviceActions = {
   Yubikey = {
-    connect    = function() os.execute("caffeinate -u -t 10") end,
-    disconnect = lockScreen
+    -- connect    = function() os.execute("caffeinate -u -t 10") end,
+    -- disconnect = lockScreen
   }
 }
 spoon.UsbYubiWatcher:start()
 
 hs.loadSpoon("KeyCommander")
 spoon.KeyCommander:bindHotkeys({
-    hotkey = spoon.KeyCommander.defaultHotkey,
-    appKeys = {
-      {{}, 'B', 'Calibre'},
-      {{}, 'C', 'Calendar'},
-      {{"shift"}, 'C', 'Calculator'},
-      {{}, 'E', 'Emacs'},
-      {{}, 'F', 'Finder'},
-      {{}, 'G', 'Telegram'},
-      {{}, 'K', 'Skype'},
-      {{}, 'S', 'Slack'},
-      {{}, 'M', 'Mail'},
-      {{}, 'N', 'Notes'},
-      {{}, 'P', 'KeePassXC'},
-      {{}, 'O', 'Spotify'},
-      {{}, 'T', 'iTerm'},
-      {{}, 'V', 'Viber'},
-      {{}, 'Z', 'Zoom.us.app'},
-      {{}, 'W', 'Firefox'},
-      {{}, '.', 'Dash'},
-      {{}, ',', 'System Preferences'},
-      {{}, ';', 'Activity Monitor'},
-      {{}, '\\', 'Amphetamine'}
-    },
+  hotkey = spoon.KeyCommander.defaultHotkey,
+  appKeys = {
+    { {},          '8',  'OpenLens' },
+    { {},          'B',  'Calibre' },
+    { {},          'C',  'Calendar' },
+    { { "shift" }, 'C',  'Calculator' },
+    { {},          'E',  'Emacs' },
+    { {},          'R',  'Visual Studio Code' },
+    { {},          'F',  'Finder' },
+    { {},          'G',  'Telegram' },
+    { {},          'K',  'Skype' },
+    { {},          'S',  'Slack' },
+    { {},          'D',  'Microsoft Teams' },
+    { { "shift" }, 'S',  'Signal' },
+    -- { {},          'M',  'Mail' },
+    { {},          'M',  'Microsoft Outlook' },
+    { {},          'P',  'KeePassXC' },
+    { {},          'O',  'Spotify' },
+    { {},          'T',  'iTerm' },
+    { {},          'V',  'Viber' },
+    { {},          'Z',  'Zoom.us.app' },
+    { {},          'W',  'Firefox' },
+    { {},          '.',  'Dash' },
+    { {},          ',',  'System Preferences' },
+    { {},          ';',  'Activity Monitor' },
+    { {},          '\\', 'Amphetamine' }
+  },
     actionKeys = {
       {{}, "Y", activateYubikey},
       {{}, "L", lockScreen},
@@ -185,18 +189,30 @@ spoon.KeyCommander:bindHotkeys({
     }
 })
 
-local lastPsuSerial = "unknown"
+local function isempty(s)
+  return s == '' or s == nil
+end
 
 local function batteryChangedCallback()
-  local psuSerial = hs.battery.psuSerialString()
-  if hs.battery.powerSource() == "AC Power"  then
-    if psuSerial ~= "C4H701102AMGN8RA4"
-      and psuSerial ~=""
-      and psuSerial ~= lastPsuSerial
-    then
+  local log = hs.logger.new('btrCharger', 'info')
+  local psuSerial = hs.battery.adapterSerialNumber()
+
+  local allowedChargers = {
+    ["C4H247400HSPM0WA3"] = true,
+    ["C4H701102AMGN8RA4"] = true,
+    ["F16HBD00CNC000000P"] = true
+  }
+
+  log.i(allowedChargers[psuSerial])
+
+  if (hs.battery.powerSource() == "AC Power" and not isempty(psuSerial)) then
+    if not allowedChargers[psuSerial] then
       hs.notify.show("Battery Watcher", "That's not your power supply!", psuSerial)
+      log.i("not your charger", psuSerial)
     end
-    lastPsuSerial = psuSerial
+
+    log.i("connected charger", psuSerial)
+
   end
 end
 
